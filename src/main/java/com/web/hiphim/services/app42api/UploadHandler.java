@@ -36,7 +36,7 @@ public class UploadHandler {
         var resultOfFile = fileHandler.parseFileName(file.getOriginalFilename());
         var countArr = new ArrayList<Integer>();
 
-        try (InputStream stream = file.getInputStream()) {
+        try (InputStream is = file.getInputStream()) {
             while (fileSize >= 500000000) {
                 countArr.add(500000000);
                 fileSize -= 500000000;
@@ -50,7 +50,7 @@ public class UploadHandler {
             OutputStream os = new FileOutputStream(path.toString());
 
             for (int i = 0; i < countArr.size(); i++) {
-                arrByte = stream.readNBytes(countArr.get(i));
+                arrByte = is.readNBytes(countArr.get(i));
                 os.write(arrByte);
                 if (i != countArr.size() - 1) {
                     os.flush();
