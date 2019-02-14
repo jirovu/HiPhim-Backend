@@ -24,9 +24,10 @@ server:
 spring:
   profiles: development
   #MongoDB configuration
-  #  data:
-  #    mongodb:
-  #      uri:
+  data:
+    mongodb:
+      uri: mongodb://hiphim:hiphimd16@ds021326.mlab.com:21326/hiphim
+      database: hiphim
 
 
 #Production Environment config
@@ -37,6 +38,7 @@ server:
 spring:
   profiles: production
   #MongoDB configuration
-  #  data:
-  #    mongodb:
-  #      uri:
+  data:
+    mongodb:
+      uri:
+      database:
