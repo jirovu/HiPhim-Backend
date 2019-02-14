@@ -1,5 +1,8 @@
 package com.web.hiphim.services.app42api;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +16,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 @Service
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UploadHandler {
     @Autowired
     private App42Service app42Service;
