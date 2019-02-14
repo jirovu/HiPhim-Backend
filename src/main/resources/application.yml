@@ -7,6 +7,9 @@ spring:
     issuer: "HiPhim"
     secret: "my mama don't like you and she likes everyone"
     expirationTime: 86400000
+  banner:
+    image:
+      location: banner.txt
 
 
 #Development Environment config
