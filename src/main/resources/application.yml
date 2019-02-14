@@ -1,0 +1,35 @@
+#Spring config
+spring:
+  profiles:
+    active: development
+  #Token setup
+  token:
+    issuer: "HiPhim"
+    secret: "my mama don't like you and she likes everyone"
+    expirationTime: 86400000
+
+
+#Development Environment config
+---
+server:
+  port: 1010
+
+spring:
+  profiles: development
+  #MongoDB configuration
+  #  data:
+  #    mongodb:
+  #      uri:
+
+
+#Production Environment config
+---
+server:
+  port: 2020
+
+spring:
+  profiles: production
+  #MongoDB configuration
+  #  data:
+  #    mongodb:
+  #      uri:
