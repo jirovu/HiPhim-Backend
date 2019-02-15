@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/home")
-public class HomeController {
+@RequestMapping("/user")
+public class UserController {
     @Autowired
     private IUserRepository userRepository;
     @Autowired
@@ -29,7 +29,7 @@ public class HomeController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/home")
+    @GetMapping("/greet")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     public String greet() {
         return "Welcome to homepage";
@@ -53,5 +53,19 @@ public class HomeController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON).body(null);
+    }
+
+    @PostMapping("/register")
+    public boolean register(@Valid @RequestBody User user) {
+        try {
+            if (userRepository.findByUsername(user.getUsername()) == null) {
+                userRepository.insert(new User(user.getUsername(), passwordEncoder.encode(user.getPassword()),
+                        user.getName(), user.getUrlAvt(), user.getRoles()));
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
