@@ -28,6 +28,8 @@ spring:
     mongodb:
       uri: mongodb://hiphim:hiphimd16@ds021326.mlab.com:21326/hiphim
       database: hiphim
+  origin:
+    url: "http://localhost:4200"
 
 
 #Production Environment config
