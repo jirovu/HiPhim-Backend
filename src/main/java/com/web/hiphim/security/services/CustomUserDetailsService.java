@@ -11,11 +11,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
 
+/*
+ * Authenticate user
+ * */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private IUserRepository userRepository;
 
+    /*
+     * Return the User when input value is valid
+     * Otherwise return null
+     * */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var userExist = userRepository.findByUsername(username);

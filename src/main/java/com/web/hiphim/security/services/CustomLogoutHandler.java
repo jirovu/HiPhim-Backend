@@ -10,8 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 
+/*
+ * Handle logic when user logout
+ * */
 @Service
 public class CustomLogoutHandler implements LogoutHandler {
+    /*
+     * Remove cookies from application
+     * */
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                        Authentication authentication) {

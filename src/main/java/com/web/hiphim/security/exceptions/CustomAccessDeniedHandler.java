@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/*
+ * Handle request if authenticate is denied
+ * */
 @Service
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override

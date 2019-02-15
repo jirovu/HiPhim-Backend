@@ -16,6 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
+/*
+ * Authorize any request come to application
+ * */
 @Service
 public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
     @Autowired
@@ -23,6 +27,9 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    /*
+     * Handle any request and set authentication if valid
+     * */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -40,6 +47,11 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
 
     }
 
+    /*
+     * Get jwt token from header
+     * Return Token if request header is valid
+     * Otherwise return null
+     * */
     private String getJwtTokenFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
@@ -48,6 +60,11 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
         return null;
     }
 
+    /*
+     * Get UsernamePasswordAuthenticationToken based on token
+     * Return new instance if valid
+     * Otherwise return null
+     * */
     private UsernamePasswordAuthenticationToken getAuthenticationToken(String token) {
         try {
             // Get user by token
