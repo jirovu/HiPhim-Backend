@@ -44,3 +44,5 @@ spring:
     mongodb:
       uri:
       database:
+  origin:
+    url:

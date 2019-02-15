@@ -79,7 +79,7 @@ public class App42Service {
      * Return True if success
      * Otherwise return False
      * */
-    public boolean removeFileByName(String fileName, String username) {
+    public boolean removeFileByUser(String fileName, String username) {
         try {
             uploadService.removeFileByUser(fileName, username);
             return true;
