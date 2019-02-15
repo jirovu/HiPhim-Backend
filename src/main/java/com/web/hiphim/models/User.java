@@ -19,11 +19,15 @@ public class User {
     @Indexed(unique = true)
     private String username;
     private String password;
+    private String name;
+    private String urlAvt;
     private List<String> roles;
 
-    public User(String username, String password, List<String> roles) {
+    public User(String username, String password, String name, String urlAvt, List<String> roles) {
         this.username = username;
         this.password = password;
+        this.name = name;
+        this.urlAvt = urlAvt;
         this.roles = roles;
     }
 }
