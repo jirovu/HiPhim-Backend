@@ -1,6 +1,5 @@
 package com.web.hiphim.security.services;
 
-import com.web.hiphim.models.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.AllArgsConstructor;

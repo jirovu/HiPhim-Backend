@@ -26,10 +26,10 @@ public class UploadHandler {
     private FileHandler fileHandler;
 
     /*
-    * Upload file handler
-    * Return True if success
-    * Otherwise return False
-    * */
+     * Upload file handler
+     * Return True if success
+     * Otherwise return False
+     * */
     public boolean uploadFileHandler(MultipartFile file, String username, String description) {
         if (file.isEmpty())
             return false;

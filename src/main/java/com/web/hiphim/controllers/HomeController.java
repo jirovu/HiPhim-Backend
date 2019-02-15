@@ -4,7 +4,6 @@ import com.web.hiphim.models.User;
 import com.web.hiphim.repositories.IUserRepository;
 import com.web.hiphim.security.services.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +36,8 @@ public class HomeController {
     }
 
     /*
-    * This method used to handle login user and response JWT TOKEN to client
-    * */
+     * This method used to handle login user and response JWT TOKEN to client
+     * */
     @PostMapping("/login")
     public ResponseEntity<String> home(@Valid @RequestBody User user) {
         var userExist = userRepository.findByUsername(user.getUsername());
