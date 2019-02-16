@@ -1,9 +1,11 @@
 package com.web.hiphim.security.filters;
 
+import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.CustomUserDetailsService;
 import com.web.hiphim.security.services.JwtTokenProvider;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,10 +24,14 @@ import java.io.IOException;
  * */
 @Service
 public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
+    @Value("${server.servlet.session.cookie.name}")
+    private String cookieName;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private CookieProvider cookieProvider;
 
     /*
      * Handle any request and set authentication if valid
@@ -39,6 +45,7 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
             if (StringUtils.hasText(jwtToken)) {
                 UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                cookieProvider.updateCookie(request, response);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

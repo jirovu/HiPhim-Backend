@@ -5,9 +5,6 @@ import com.web.hiphim.repositories.IUserRepository;
 import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,11 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping("/user")
@@ -38,7 +33,7 @@ public class UserController {
 
     @GetMapping("/greet")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public String greet(HttpServletRequest request) {
+    public String greet() {
         return "Welcome to homepage";
     }
 
