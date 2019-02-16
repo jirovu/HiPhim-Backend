@@ -2,6 +2,7 @@ package com.web.hiphim.controllers;
 
 import com.web.hiphim.models.User;
 import com.web.hiphim.repositories.IUserRepository;
+import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
+    @Autowired
+    private CookieProvider cookieProvider;
     @Autowired
     private IUserRepository userRepository;
     @Autowired
@@ -31,7 +38,7 @@ public class UserController {
 
     @GetMapping("/greet")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
-    public String greet() {
+    public String greet(HttpServletRequest request) {
         return "Welcome to homepage";
     }
 
@@ -39,7 +46,8 @@ public class UserController {
      * This method used to handle login user and response JWT TOKEN to client
      * */
     @PostMapping("/login")
-    public ResponseEntity<String> home(@Valid @RequestBody User user) {
+    public void home(HttpServletResponse response,
+                     @Valid @RequestBody User user) {
         var userExist = userRepository.findByUsername(user.getUsername());
         if (userExist != null && passwordEncoder.matches(user.getPassword(), userExist.getPassword())) {
             Authentication authentication = authenticationManager.authenticate(
@@ -48,11 +56,8 @@ public class UserController {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String token = jwtTokenProvider.generateToken(authentication);
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON).body(token);
+            cookieProvider.create(response, cookieProvider.getCookieName(), token);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON).body(null);
     }
 
     @PostMapping("/register")

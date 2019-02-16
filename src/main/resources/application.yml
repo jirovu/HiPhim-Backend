@@ -15,6 +15,13 @@ spring:
     image:
       location: banner.txt
 
+server:
+  servlet:
+    #Set cookie age
+    session:
+      cookie:
+        max-age: 86400
+        name: "JWT-TOKEN"
 
 #Development Environment config
 ---
