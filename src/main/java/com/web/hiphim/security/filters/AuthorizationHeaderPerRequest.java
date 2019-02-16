@@ -1,5 +1,7 @@
 package com.web.hiphim.security.filters;
 
+import com.web.hiphim.models.TokenBlacklist;
+import com.web.hiphim.repositories.ITokenBlacklist;
 import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.CustomUserDetailsService;
 import com.web.hiphim.security.services.JwtTokenProvider;
@@ -32,6 +34,8 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private CookieProvider cookieProvider;
+    @Autowired
+    private ITokenBlacklist tokenBlacklist;
 
     /*
      * Handle any request and set authentication if valid
@@ -42,7 +46,9 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
 
         try {
             var jwtToken = getJwtTokenFromHeader(request);
-            if (StringUtils.hasText(jwtToken)) {
+            var tokenInBlacklist = tokenBlacklist.findByToken(jwtToken);
+            if (StringUtils.hasText(jwtToken) && tokenInBlacklist == null) {
+                tokenBlacklist.insert(new TokenBlacklist(jwtToken));
                 UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 cookieProvider.updateCookie(request, response);
