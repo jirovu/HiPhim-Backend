@@ -49,9 +49,9 @@ public class CookieProvider {
     * */
     public void updateCookie(HttpServletRequest request, HttpServletResponse response) {
         var username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        var userExist = userRepository.findByUsername(username);
+        var userExist = userRepository.findByEmail(username);
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userExist.getUsername(), userExist.getPassword())
+                new UsernamePasswordAuthenticationToken(userExist.getEmail(), userExist.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

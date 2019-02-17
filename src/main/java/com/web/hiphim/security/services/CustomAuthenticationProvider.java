@@ -26,7 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getPrincipal().toString();
         String password = authentication.getCredentials().toString();
 
-        User userExist = userRepository.findByUsername(username);
+        User userExist = userRepository.findByEmail(username);
         if (userExist != null && password.equals(userExist.getPassword())) {
             var authorities = userExist.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))

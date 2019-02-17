@@ -7,6 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(rollbackFor = Exception.class)
 public interface IUserRepository extends MongoRepository<User, String> {
-    @Query("{ username : ?0 }")
-    User findByUsername(String username);
+    @Query("{ email : ?0 }")
+    User findByEmail(String email);
 }

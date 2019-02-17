@@ -14,6 +14,21 @@ spring:
   banner:
     image:
       location: banner.txt
+  #Mail config
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: hiphimd16attt@gmail.com
+    password: hiphimd16
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
 
 server:
   servlet:

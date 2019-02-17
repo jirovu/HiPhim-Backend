@@ -81,12 +81,12 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
     private UsernamePasswordAuthenticationToken getAuthenticationToken(String token) {
         try {
             // Get user by token
-            String username = Jwts.parser().setSigningKey(jwtTokenProvider.getSecret())
+            String email = Jwts.parser().setSigningKey(jwtTokenProvider.getSecret())
                     .parseClaimsJws(token)
                     .getBody()
                     .getSubject();
             // Call loadUserByUsername method to get Object User that contains USERNAME, PASSWORD AND AUTHORITIES
-            var userDetails = customUserDetailsService.loadUserByUsername(username);
+            var userDetails = customUserDetailsService.loadUserByUsername(email);
 
             return userDetails != null ?
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
