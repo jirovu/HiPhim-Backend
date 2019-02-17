@@ -8,6 +8,8 @@ import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.JwtTokenProvider;
 import com.web.hiphim.services.mail.MailProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -54,7 +57,7 @@ public class UserController {
         try {
             var userExist = userRepository.findByEmail(supervisor.getUserEmail());
             var supervisorExist = supervisorRepository.findByUserEmail(supervisor.getUserEmail());
-            if (supervisor != null && userExist != null) {
+            if (userExist != null) {
                 if (supervisorExist == null) {
                     supervisorRepository.insert(supervisor);
                 } else {
@@ -120,8 +123,8 @@ public class UserController {
      * This method used to handle login user and response JWT TOKEN to client
      * */
     @PostMapping("/login")
-    public boolean home(HttpServletResponse response,
-                     @Valid @RequestBody User user) {
+    public ResponseEntity<String> home(HttpServletResponse response,
+                                       @Valid @RequestBody User user) {
         var userExist = userRepository.findByEmail(user.getEmail());
         if (userExist != null && passwordEncoder.matches(user.getPassword(), userExist.getPassword())) {
             Authentication authentication = authenticationManager.authenticate(
@@ -131,9 +134,18 @@ public class UserController {
             String token = jwtTokenProvider.generateToken(authentication);
 
             cookieProvider.create(response, cookieProvider.getCookieName(), token);
-            return true;
+            var admin = userExist.getRoles().stream().filter(role -> role.equals("admin"))
+                    .collect(Collectors.toList());
+            if (admin.size() != 0) {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(admin.get(0));
+            } else {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body("user");
+            }
         }
-        return false;
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("error");
     }
 
     /*
