@@ -16,6 +16,7 @@ public class TokenBlacklist {
     @Id
     private String id = UUID.randomUUID().toString();
 
+    @Indexed(unique = true)
     private String token;
     @Indexed(expireAfterSeconds = 86400)
     private Date createdTime = new Date();
