@@ -7,10 +7,6 @@ spring:
     issuer: "HiPhim"
     secret: "my mama don't like you and she likes everyone"
     expirationTime: 86400000
-  #App42 API
-  app42:
-    apiKey: "3d3454bbb13b38b2f230bc20f327789fa111ca854f1ade42d5644fbb0e0b7fa6"
-    secretKey: "d412fe7e16faecb053606698efe2d667a7c1265285731848f697b316c603abe6"
   banner:
     image:
       location: banner.txt

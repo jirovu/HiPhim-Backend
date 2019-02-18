@@ -22,15 +22,12 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class App42Service {
-    @Value("${spring.app42.apiKey}")
-    private String apiKey;
-    @Value("${spring.app42.secretKey}")
-    private String secretKey;
     private UploadService uploadService;
     private HashSet<ACL> aclList;
 
     public App42Service() {
-        App42API.initialize(apiKey, secretKey);
+        App42API.initialize("3d3454bbb13b38b2f230bc20f327789fa111ca854f1ade42d5644fbb0e0b7fa6",
+                "d412fe7e16faecb053606698efe2d667a7c1265285731848f697b316c603abe6");
         uploadService = App42API.buildUploadService();
         aclList = new HashSet<>() {
             {

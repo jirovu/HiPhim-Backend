@@ -1,11 +1,14 @@
 package com.web.hiphim.controllers;
 
+import com.web.hiphim.models.Movie;
 import com.web.hiphim.models.Supervisor;
 import com.web.hiphim.models.User;
+import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.ISupervisorRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.JwtTokenProvider;
+import com.web.hiphim.services.app42api.App42Service;
 import com.web.hiphim.services.mail.MailProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,6 +44,10 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private MailProvider mailProvider;
+    @Autowired
+    private App42Service app42Service;
+    @Autowired
+    private IMovieRepository movieRepository;
 
     @GetMapping("/greet")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -123,8 +131,8 @@ public class UserController {
      * This method used to handle login user and response JWT TOKEN to client
      * */
     @PostMapping("/login")
-    public ResponseEntity<String> home(HttpServletResponse response,
-                                       @Valid @RequestBody User user) {
+    public ResponseEntity<Boolean> home(HttpServletResponse response,
+                                            @Valid @RequestBody User user) {
         var userExist = userRepository.findByEmail(user.getEmail());
         if (userExist != null && passwordEncoder.matches(user.getPassword(), userExist.getPassword())) {
             Authentication authentication = authenticationManager.authenticate(
@@ -134,18 +142,12 @@ public class UserController {
             String token = jwtTokenProvider.generateToken(authentication);
 
             cookieProvider.create(response, cookieProvider.getCookieName(), token);
-            var admin = userExist.getRoles().stream().filter(role -> role.equals("admin"))
-                    .collect(Collectors.toList());
-            if (admin.size() != 0) {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body(admin.get(0));
-            } else {
-                return ResponseEntity.status(HttpStatus.OK)
-                        .body("user");
-            }
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(true);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("error");
+                .body(false);
     }
 
     /*

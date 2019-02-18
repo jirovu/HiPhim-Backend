@@ -97,7 +97,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/user/**").permitAll()
+                .antMatchers("/user/**",
+                        "/home/**").permitAll()
                 .anyRequest().authenticated()
 
                 // Configuration exception handling
