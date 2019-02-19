@@ -1,6 +1,5 @@
 package com.web.hiphim.controllers;
 
-import com.web.hiphim.models.Movie;
 import com.web.hiphim.models.Supervisor;
 import com.web.hiphim.models.User;
 import com.web.hiphim.repositories.IMovieRepository;
@@ -24,8 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")
@@ -132,7 +129,7 @@ public class UserController {
      * */
     @PostMapping("/login")
     public ResponseEntity<Boolean> home(HttpServletResponse response,
-                                            @Valid @RequestBody User user) {
+                                        @Valid @RequestBody User user) {
         var userExist = userRepository.findByEmail(user.getEmail());
         if (userExist != null && passwordEncoder.matches(user.getPassword(), userExist.getPassword())) {
             Authentication authentication = authenticationManager.authenticate(
@@ -156,16 +153,19 @@ public class UserController {
      * Otherwise return False
      * */
     @PostMapping("/register")
-    public boolean register(@Valid @RequestBody User user) {
+    public ResponseEntity<Boolean> register(@Valid @RequestBody User user) {
         try {
             if (userRepository.findByEmail(user.getEmail()) == null) {
                 userRepository.insert(new User(user.getEmail(), passwordEncoder.encode(user.getPassword()),
                         user.getName(), user.getUrlAvt(), user.getRoles()));
-                return true;
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(true);
             }
-            return false;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(false);
         } catch (Exception e) {
-            return false;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(false);
         }
     }
 }

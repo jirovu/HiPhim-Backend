@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
 import java.util.UUID;
 
 @Document(collection = "movie")
@@ -20,13 +21,15 @@ public class Movie {
     private String description;
     private String userId;
     private String url;
+    private String category;
     private boolean approved;
 
-    public Movie(String userId, String name, String description, String url, boolean approved) {
-        this.userId = userId;
+    public Movie(String name, String description, String userId, String url, String category, boolean approved) {
         this.name = name;
         this.description = description;
+        this.userId = userId;
         this.url = url;
+        this.category = category;
         this.approved = approved;
     }
 }
