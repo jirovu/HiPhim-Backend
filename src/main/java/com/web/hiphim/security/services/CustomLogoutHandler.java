@@ -31,6 +31,7 @@ public class CustomLogoutHandler implements LogoutHandler {
             cookie.setMaxAge(0);
             cookie.setValue(null);
             cookie.setPath("/");
+            httpServletResponse.addCookie(cookie);
         });
     }
 }

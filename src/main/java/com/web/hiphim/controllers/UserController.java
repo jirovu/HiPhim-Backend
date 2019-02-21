@@ -106,6 +106,14 @@ public class UserController {
     }
 
     /*
+    * Logout handle
+    * */
+    @PostMapping("/logout")
+    public void logout(HttpServletResponse response){
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    /*
      * Check identify code if code is valid
      * Return True if successfully
      * Otherwise return False

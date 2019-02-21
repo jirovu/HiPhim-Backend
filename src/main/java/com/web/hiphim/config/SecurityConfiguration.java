@@ -107,12 +107,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(customAccessDeniedHandler)
 
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 // Configuration logout handling
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/home/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                 .invalidateHttpSession(true)
                 .addLogoutHandler(customLogoutHandler)
                 .logoutSuccessHandler(customLogoutSuccessHandler)
