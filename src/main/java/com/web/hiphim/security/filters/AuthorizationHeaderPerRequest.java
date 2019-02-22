@@ -51,7 +51,7 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
                 tokenBlacklist.insert(new TokenBlacklist(jwtToken));
                 UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-                cookieProvider.updateCookie(request, response);
+                cookieProvider.updateCookie(response);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

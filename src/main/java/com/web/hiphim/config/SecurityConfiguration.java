@@ -97,8 +97,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/user/**",
-                        "/home/**").permitAll()
+                .antMatchers("/auth/**",
+                        "/home/**",
+                        "/admin/**",
+                        "/user/**").permitAll()
                 .anyRequest().authenticated()
 
                 // Configuration exception handling
@@ -112,7 +114,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // Configuration logout handling
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout"))
                 .invalidateHttpSession(true)
                 .addLogoutHandler(customLogoutHandler)
                 .logoutSuccessHandler(customLogoutSuccessHandler)

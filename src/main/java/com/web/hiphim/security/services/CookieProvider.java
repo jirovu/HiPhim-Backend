@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
@@ -34,8 +33,8 @@ public class CookieProvider {
     private AuthenticationManager authenticationManager;
 
     /*
-    * Create and setup cooke per request
-    * */
+     * Create and setup cooke per request
+     * */
     public void create(HttpServletResponse response, String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(cookieAge);
@@ -45,9 +44,9 @@ public class CookieProvider {
     }
 
     /*
-    * Update expiration time for JWT Token
-    * */
-    public void updateCookie(HttpServletRequest request, HttpServletResponse response) {
+     * Update expiration time for JWT Token
+     * */
+    public void updateCookie(HttpServletResponse response) {
         var username = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var userExist = userRepository.findByEmail(username);
         Authentication authentication = authenticationManager.authenticate(

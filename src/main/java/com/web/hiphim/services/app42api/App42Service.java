@@ -7,7 +7,6 @@ import com.shephertz.app42.paas.sdk.java.upload.UploadFileType;
 import com.shephertz.app42.paas.sdk.java.upload.UploadService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.Path;
