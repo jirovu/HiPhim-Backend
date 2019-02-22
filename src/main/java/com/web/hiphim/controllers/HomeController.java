@@ -19,8 +19,8 @@ public class HomeController {
     @Autowired
     private IUserRepository userRepository;
 
-    @GetMapping("")
-    public ResponseEntity<List<Movie>> home() {
+    @GetMapping("/get-all-movies")
+    public ResponseEntity<List<Movie>> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
         if (movies != null) {
             return ResponseEntity.status(HttpStatus.OK)
