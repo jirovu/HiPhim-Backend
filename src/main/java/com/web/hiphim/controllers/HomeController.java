@@ -41,4 +41,15 @@ public class HomeController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(null);
     }
+
+    @GetMapping("/get-movies-by-category")
+    public ResponseEntity<List<Movie>> getMoviesByCategory(@RequestParam("category") String category) {
+        var moviesByCategory = movieRepository.findByCategory(category);
+        if (moviesByCategory != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(moviesByCategory);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(null);
+    }
 }
