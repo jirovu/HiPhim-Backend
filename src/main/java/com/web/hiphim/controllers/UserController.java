@@ -2,12 +2,10 @@ package com.web.hiphim.controllers;
 
 import com.web.hiphim.models.Supervisor;
 import com.web.hiphim.models.User;
-import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.ISupervisorRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import com.web.hiphim.security.services.CookieProvider;
 import com.web.hiphim.security.services.JwtTokenProvider;
-import com.web.hiphim.services.app42api.App42Service;
 import com.web.hiphim.services.mail.MailProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,10 +39,6 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private MailProvider mailProvider;
-    @Autowired
-    private App42Service app42Service;
-    @Autowired
-    private IMovieRepository movieRepository;
 
     @GetMapping("/greet")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
@@ -103,14 +97,6 @@ public class UserController {
             System.out.println(e.getMessage());
             return false;
         }
-    }
-
-    /*
-    * Logout handle
-    * */
-    @PostMapping("/logout")
-    public void logout(HttpServletResponse response){
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /*
