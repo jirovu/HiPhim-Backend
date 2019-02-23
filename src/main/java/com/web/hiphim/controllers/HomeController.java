@@ -77,8 +77,11 @@ public class HomeController {
                         });
                     }
                 };
+                if(answers.isEmpty()){
+                    return ResponseEntity.status(HttpStatus.OK).body("Em yêu anh");
+                }
             } else {
-                return ResponseEntity.status(HttpStatus.OK).body("Vâng ạ");
+                return ResponseEntity.status(HttpStatus.OK).body("Yêu anh nhiều");
             }
         }
         Random random = new Random();
