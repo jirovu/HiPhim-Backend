@@ -2,6 +2,7 @@ package com.web.hiphim.controllers;
 
 import com.web.hiphim.models.Movie;
 import com.web.hiphim.repositories.IMovieRepository;
+import com.web.hiphim.repositories.ISimRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/home")
@@ -18,6 +20,8 @@ public class HomeController {
     private IMovieRepository movieRepository;
     @Autowired
     private IUserRepository userRepository;
+    @Autowired
+    private ISimRepository simRepository;
 
     @GetMapping("/get-all-movies")
     public ResponseEntity<List<Movie>> getAllMovies() {
@@ -51,5 +55,16 @@ public class HomeController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(null);
+    }
+
+    @PostMapping("/get-ans")
+    public ResponseEntity<String> getAnswer(@RequestBody String ask) {
+        List<String> answers = simRepository.findByAsk(ask.toLowerCase());
+        if (answers == null || answers.size() == 0) {
+            answers = simRepository.findAllAns();
+        }
+        Random random = new Random();
+        int index = random.nextInt(answers.size());
+        return ResponseEntity.status(HttpStatus.OK).body(answers.get(index));
     }
 }
