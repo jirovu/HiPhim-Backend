@@ -48,12 +48,6 @@ spring:
       database: hiphim
   origin:
     url: "http://localhost:4200"
-  #SqlServer configuration
-  datasource:
-    username: hiphim
-    password: hiphim
-    url: jdbc:mysql://localhost:3306/HiPhim?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
-    sql-script-encoding: UTF-8
 
 
 

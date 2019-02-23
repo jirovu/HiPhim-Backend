@@ -1,14 +1,15 @@
 package com.web.hiphim.controllers;
 
 import com.web.hiphim.models.Movie;
+import com.web.hiphim.repositories.IHeraRepository;
 import com.web.hiphim.repositories.IMovieRepository;
-import com.web.hiphim.repositories.ISimRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -21,7 +22,7 @@ public class HomeController {
     @Autowired
     private IUserRepository userRepository;
     @Autowired
-    private ISimRepository simRepository;
+    private IHeraRepository heraRepository;
 
     @GetMapping("/get-all-movies")
     public ResponseEntity<List<Movie>> getAllMovies() {
@@ -59,9 +60,26 @@ public class HomeController {
 
     @PostMapping("/get-ans")
     public ResponseEntity<String> getAnswer(@RequestBody String ask) {
-        List<String> answers = simRepository.findByAsk(ask.toLowerCase());
-        if (answers == null || answers.size() == 0) {
-            answers = simRepository.findAllAns();
+        List<String> answers = new ArrayList<>() {
+            {
+                heraRepository.findAnsByAsk(ask.toLowerCase()).forEach(hera -> {
+                    add(hera.getAns());
+                });
+            }
+        };
+        if (answers.isEmpty()) {
+            if (ask.contains(" ")) {
+                var fistWord = ask.substring(0, ask.indexOf(" "));
+                answers = new ArrayList<>() {
+                    {
+                        heraRepository.findAnsByAsk(fistWord).forEach(hera -> {
+                            add(hera.getAns());
+                        });
+                    }
+                };
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body("Vâng ạ");
+            }
         }
         Random random = new Random();
         int index = random.nextInt(answers.size());
