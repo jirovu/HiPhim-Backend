@@ -5,6 +5,7 @@ import com.web.hiphim.repositories.IHeraRepository;
 import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class HomeController {
     public ResponseEntity<Optional<Movie>> user(@PathVariable String userId, @RequestParam("id") String id) {
         var userExist = userRepository.findById(userId);
         var movieExist = movieRepository.findById(id);
-        if (!userExist.isEmpty() && !movieExist.isEmpty()) {
+        if (userExist.isPresent() && !movieExist.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(movieExist);
         }
@@ -60,32 +61,33 @@ public class HomeController {
 
     @PostMapping("/get-ans")
     public ResponseEntity<String> getAnswer(@RequestBody String ask) {
+        Random random = new Random();
         List<String> answers = new ArrayList<>() {
             {
-                heraRepository.findAnsByAsk(ask.toLowerCase()).forEach(hera -> {
-                    add(hera.getAns());
-                });
+                heraRepository.findAnsByAsk(ask.toLowerCase()).forEach(hera -> add(hera.getAns()));
             }
         };
-        if (answers.isEmpty()) {
-            if (ask.contains(" ")) {
-                var fistWord = ask.substring(0, ask.indexOf(" "));
-                answers = new ArrayList<>() {
-                    {
-                        heraRepository.findAnsByAsk(fistWord).forEach(hera -> {
-                            add(hera.getAns());
-                        });
-                    }
-                };
-                if(answers.isEmpty()){
-                    return ResponseEntity.status(HttpStatus.OK).body("Em yêu anh");
+
+        try {
+            if (answers.isEmpty()) {
+                if (ask.contains(" ")) {
+                    var fistWord = ask.substring(0, ask.indexOf(" "));
+                    answers = new ArrayList<>() {
+                        {
+                            heraRepository.findAnsByAsk(fistWord).forEach(hera -> add(hera.getAns()));
+                        }
+                    };
                 }
-            } else {
-                return ResponseEntity.status(HttpStatus.OK).body("Yêu anh nhiều");
             }
+            return ResponseEntity.status(HttpStatus.OK).body(answers.get(random.nextInt(answers.size())));
+        } catch (Exception e) {
+            answers = new ArrayList<>() {
+                {
+                    heraRepository.findAllByLimit(new PageRequest(random.nextInt(100), 100))
+                            .forEach(hera -> add(hera.getAns()));
+                }
+            };
+            return ResponseEntity.status(HttpStatus.OK).body(answers.get(random.nextInt(answers.size())));
         }
-        Random random = new Random();
-        int index = random.nextInt(answers.size());
-        return ResponseEntity.status(HttpStatus.OK).body(answers.get(index));
     }
 }
