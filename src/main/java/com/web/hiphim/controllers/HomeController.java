@@ -40,7 +40,7 @@ public class HomeController {
     public ResponseEntity<Optional<Movie>> user(@PathVariable String userId, @RequestParam("id") String id) {
         var userExist = userRepository.findById(userId);
         var movieExist = movieRepository.findById(id);
-        if (userExist.isPresent() && !movieExist.isPresent()) {
+        if (userExist.isPresent() && movieExist.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(movieExist);
         }
