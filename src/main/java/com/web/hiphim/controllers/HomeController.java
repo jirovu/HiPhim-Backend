@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,21 @@ public class HomeController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(movies);
+    }
+
+    @GetMapping("/get-movies-by-category-and-name")
+    public ResponseEntity<List<Movie>> getMoviesByCategory(@Valid @RequestParam("category") String category,
+                                                           @RequestParam("name") String name) {
+        var result = movieRepository.findByCategoryAndName(category, name);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
+    }
+
+    @GetMapping("/get-movies-by-name")
+    public ResponseEntity<List<Movie>> getMoviesByName(@Valid @RequestParam("name") String name) {
+        var result = movieRepository.findByName(name);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
     }
 
     @GetMapping("/personal/{userId}")

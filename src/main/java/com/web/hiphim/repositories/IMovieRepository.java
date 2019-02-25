@@ -14,4 +14,10 @@ public interface IMovieRepository extends MongoRepository<Movie, String> {
 
     @Query(" { category : ?0 } ")
     List<Movie> findByCategory(String category);
+
+    @Query(" { category: ?0, name: { $regex: ?1 } } ")
+    List<Movie> findByCategoryAndName(String category, String name);
+
+    @Query(" { name: { $regex: ?0 } } ")
+    List<Movie> findByName(String name);
 }
