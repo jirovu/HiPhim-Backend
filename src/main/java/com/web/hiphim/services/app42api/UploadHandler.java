@@ -1,5 +1,8 @@
 package com.web.hiphim.services.app42api;
 
+import com.web.hiphim.models.Movie;
+import com.web.hiphim.repositories.IMovieRepository;
+import com.web.hiphim.repositories.IUserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,13 +27,18 @@ public class UploadHandler {
     private App42Service app42Service;
     @Autowired
     private FileHandler fileHandler;
+    @Autowired
+    private IMovieRepository movieRepository;
+    @Autowired
+    private IUserRepository userRepository;
 
     /*
      * Upload file handler
      * Return True if success
      * Otherwise return False
      * */
-    public boolean uploadFileHandler(MultipartFile file, String username, String description) {
+    public boolean uploadFileHandler(MultipartFile file, String username,
+                                     String description, String category) {
         if (file.isEmpty())
             return false;
         long fileSize = file.getSize();
@@ -63,8 +71,12 @@ public class UploadHandler {
                 }
             }
 
-            app42Service.uploadFileForUser(username, path.getFileName().toString(), description,
-                    path, fileHandler.getFileType(resultOfFile.get("typeOf")));
+            var movieName = path.getFileName().toString().substring(0, path.getFileName().toString().indexOf(".")).toString();
+            app42Service.uploadFileForUser(username, movieName, description, path, fileHandler.getFileType(resultOfFile.get("typeOf")));
+
+            var userExist = userRepository.findByEmail(username);
+            var url = app42Service.getFileByUsername(username, movieName).get(0).getUrl();
+            movieRepository.insert(new Movie(movieName, description, userExist.getId(), url, category, true));
 
             return true;
 

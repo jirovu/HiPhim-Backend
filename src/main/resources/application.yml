@@ -25,6 +25,12 @@ spring:
             enable: true
     protocol: smtp
     test-connection: false
+  servlet:
+    #    Setup upload file
+    multipart:
+      enabled: true
+      max-file-size: 2GB
+      max-request-size: 2GB
 
 server:
   servlet:

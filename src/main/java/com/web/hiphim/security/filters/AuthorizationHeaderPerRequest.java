@@ -46,9 +46,9 @@ public class AuthorizationHeaderPerRequest extends OncePerRequestFilter {
 
         try {
             var jwtToken = getJwtTokenFromHeader(request);
-            var tokenInBlacklist = tokenBlacklist.findByToken(jwtToken);
-            if (StringUtils.hasText(jwtToken) && tokenInBlacklist == null) {
-                tokenBlacklist.insert(new TokenBlacklist(jwtToken));
+//            var tokenInBlacklist = tokenBlacklist.findByToken(jwtToken);
+            if (StringUtils.hasText(jwtToken)) {
+//                tokenBlacklist.insert(new TokenBlacklist(jwtToken));
                 UsernamePasswordAuthenticationToken authenticationToken = getAuthenticationToken(jwtToken);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 cookieProvider.updateCookie(response);
