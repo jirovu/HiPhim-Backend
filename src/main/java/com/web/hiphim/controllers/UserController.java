@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("user")
 @PreAuthorize("hasRole('ROLE_USER')")
@@ -24,7 +26,7 @@ public class UserController {
     @PostMapping("/uploadFile")
     public ResponseEntity<Boolean> uploadFile(@RequestParam("file") MultipartFile file,
                                               @RequestParam("description") String description,
-                                              @RequestParam("category") String category) {
+                                              @RequestParam("category") String category) throws IOException {
         var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         var result = uploadHandler.uploadFileHandler(file, email, description, category);
         if (result) {
