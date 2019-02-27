@@ -15,7 +15,7 @@
 *.iws
 *.iml
 *.ipr
-/src/main/resources/files/*.mp4
+*.mp4
 
 ### NetBeans ###
 /nbproject/private/
