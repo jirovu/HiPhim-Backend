@@ -4,6 +4,7 @@ import com.web.hiphim.models.Movie;
 import com.web.hiphim.models.User;
 import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.IUserRepository;
+import com.web.hiphim.services.app42api.App42Service;
 import com.web.hiphim.services.app42api.UploadHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ public class UserController {
     private IMovieRepository movieRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private App42Service app42Service;
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Boolean> uploadFile(@RequestParam("file") MultipartFile file,
@@ -102,6 +105,7 @@ public class UserController {
             movieRepository.delete(movieExist);
 
             var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+            app42Service.removeFileByUser(movie.getName(), email);
             var userExist = userRepository.findByEmail(email);
             var movies = movieRepository.findAllMoviesByUserId(userExist.getId());
 
