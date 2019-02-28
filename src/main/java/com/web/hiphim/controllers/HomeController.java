@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/home")
@@ -62,6 +63,22 @@ public class HomeController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(null);
+    }
+
+    @GetMapping("/watch/{userId}")
+    public ResponseEntity<List<Movie>> getMoviesByUserId(@PathVariable String userId,
+                                                         @RequestParam("id") String movieId){
+        List<Movie> movies = movieRepository.findAllMoviesByUserId(userId).stream()
+                .filter(movie -> !movie.getId().equals(movieId))
+                .collect(Collectors.toList());
+
+        if(movies.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        } else {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(movies);
+        }
     }
 
     @GetMapping("/get-movies-by-category")
