@@ -1,7 +1,9 @@
 package com.web.hiphim.controllers;
 
+import com.web.hiphim.models.Comment;
 import com.web.hiphim.models.Movie;
 import com.web.hiphim.models.User;
+import com.web.hiphim.repositories.ICommentRepository;
 import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import com.web.hiphim.services.app42api.App42Service;
@@ -28,6 +30,8 @@ public class UserController {
     private UploadHandler uploadHandler;
     @Autowired
     private IMovieRepository movieRepository;
+    @Autowired
+    private ICommentRepository commentRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -111,6 +115,39 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(movies);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(null);
+    }
+
+    @PostMapping("/addComment")
+    public ResponseEntity<List<Comment>> addComment(@RequestParam("movieId") String movieId,
+                                                    @RequestParam("content") String content,
+                                                    @RequestParam("email") String email) {
+        var userExist = userRepository.findByEmail(email);
+        if (userExist != null) {
+            commentRepository.insert(new Comment(userExist.getId(), movieId, content));
+            var comments = commentRepository.findAllByMovieId(movieId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(comments);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(null);
+    }
+
+    @GetMapping("/getAllComments")
+    public ResponseEntity<List<Comment>> getAllComment(@RequestParam("movieId") String movieId) {
+        var comments = commentRepository.findAllByMovieId(movieId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(comments);
+    }
+
+    @GetMapping("/getUserByUserId")
+    public ResponseEntity<User> getUserByUserId(@RequestParam("userId") String userId) {
+        var userExist = userRepository.findByUserId(userId);
+        if (userExist != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userExist);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(null);

@@ -9,4 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface IUserRepository extends MongoRepository<User, String> {
     @Query("{ email : ?0 }")
     User findByEmail(String email);
+
+    @Query("{ _id : ?0 }")
+    User findByUserId(String id);
 }
