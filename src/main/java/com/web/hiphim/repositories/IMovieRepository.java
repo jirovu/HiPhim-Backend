@@ -9,18 +9,18 @@ import java.util.List;
 
 @Transactional(rollbackFor = Exception.class)
 public interface IMovieRepository extends MongoRepository<Movie, String> {
-    @Query(" { id : ?0 } ")
+    @Query(" { id : ?0, approved: true } ")
     Movie findByMovieId(String id);
 
-    @Query(" { category : ?0 } ")
+    @Query(" { category : ?0, approved: true } ")
     List<Movie> findByCategory(String category);
 
-    @Query(" { category: ?0, name: { $regex: ?1 } } ")
+    @Query(" { category: ?0, name: { $regex: ?1 }, approved: true } ")
     List<Movie> findByCategoryAndName(String category, String name);
 
-    @Query(" { name: { $regex: ?0 } } ")
+    @Query(" { name: { $regex: ?0 } }, approved: true ")
     List<Movie> findByName(String name);
 
-    @Query(" { userId : ?0 } ")
+    @Query(" { userId : ?0 }, approved: true ")
     List<Movie> findAllMoviesByUserId(String userId);
 }
