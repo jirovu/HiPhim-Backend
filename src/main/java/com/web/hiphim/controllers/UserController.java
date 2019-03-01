@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -120,11 +121,12 @@ public class UserController {
                 .body(null);
     }
 
-    @PostMapping("/addComment")
+    @PostMapping(value = "/addComment", produces = "application/json;charset=utf-8")
     public ResponseEntity<List<Comment>> addComment(@RequestParam("movieId") String movieId,
                                                     @RequestParam("content") String content,
-                                                    @RequestParam("email") String email) {
+                                                    @RequestParam("email") String email) throws UnsupportedEncodingException {
         var userExist = userRepository.findByEmail(email);
+        content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
         if (userExist != null) {
             commentRepository.insert(new Comment(userExist.getName(), movieId, content));
             var comments = commentRepository.findAllByMovieId(movieId);
