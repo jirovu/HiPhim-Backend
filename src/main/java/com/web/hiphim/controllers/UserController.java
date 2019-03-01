@@ -136,22 +136,4 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(null);
     }
-
-    @GetMapping("/getAllComments")
-    public ResponseEntity<List<Comment>> getAllComment(@RequestParam("movieId") String movieId) {
-        var comments = commentRepository.findAllByMovieId(movieId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(comments);
-    }
-
-    @GetMapping("/getUserByUserId")
-    public ResponseEntity<User> getUserByUserId(@RequestParam("userId") String userId) {
-        var userExist = userRepository.findByUserId(userId);
-        if (userExist != null) {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(userExist);
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(null);
-    }
 }

@@ -1,6 +1,9 @@
 package com.web.hiphim.controllers;
 
+import com.web.hiphim.models.Comment;
 import com.web.hiphim.models.Movie;
+import com.web.hiphim.models.User;
+import com.web.hiphim.repositories.ICommentRepository;
 import com.web.hiphim.repositories.IHeraRepository;
 import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.IUserRepository;
@@ -26,6 +29,8 @@ public class HomeController {
     private IUserRepository userRepository;
     @Autowired
     private IHeraRepository heraRepository;
+    @Autowired
+    private ICommentRepository commentRepository;
 
     @GetMapping("/get-all-movies")
     public ResponseEntity<List<Movie>> getAllMovies() {
@@ -67,12 +72,12 @@ public class HomeController {
 
     @GetMapping("/watch/{userId}")
     public ResponseEntity<List<Movie>> getMoviesByUserId(@PathVariable String userId,
-                                                         @RequestParam("id") String movieId){
+                                                         @RequestParam("id") String movieId) {
         List<Movie> movies = movieRepository.findAllMoviesByUserId(userId).stream()
                 .filter(movie -> !movie.getId().equals(movieId))
                 .collect(Collectors.toList());
 
-        if(movies.isEmpty()){
+        if (movies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(null);
         } else {
@@ -122,5 +127,23 @@ public class HomeController {
             };
             return ResponseEntity.status(HttpStatus.OK).body(answers.get(random.nextInt(answers.size())));
         }
+    }
+
+    @GetMapping("/getAllComments")
+    public ResponseEntity<List<Comment>> getAllComment(@RequestParam("movieId") String movieId) {
+        var comments = commentRepository.findAllByMovieId(movieId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(comments);
+    }
+
+    @GetMapping("/getUserByUserId")
+    public ResponseEntity<User> getUserByUserId(@RequestParam("userId") String userId) {
+        var userExist = userRepository.findByUserId(userId);
+        if (userExist != null) {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(userExist);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(null);
     }
 }
