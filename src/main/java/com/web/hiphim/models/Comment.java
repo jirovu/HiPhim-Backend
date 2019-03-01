@@ -16,12 +16,12 @@ public class Comment {
     @Id
     private String id = UUID.randomUUID().toString();
 
-    private String userId;
+    private String nameUser;
     private String movieId;
     private String content;
 
-    public Comment(String userId, String movieId, String content) {
-        this.userId = userId;
+    public Comment(String nameUser, String movieId, String content) {
+        this.nameUser = nameUser;
         this.movieId = movieId;
         this.content = content;
     }

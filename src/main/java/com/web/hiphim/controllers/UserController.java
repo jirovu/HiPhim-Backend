@@ -126,7 +126,7 @@ public class UserController {
                                                     @RequestParam("email") String email) {
         var userExist = userRepository.findByEmail(email);
         if (userExist != null) {
-            commentRepository.insert(new Comment(userExist.getId(), movieId, content));
+            commentRepository.insert(new Comment(userExist.getName(), movieId, content));
             var comments = commentRepository.findAllByMovieId(movieId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(comments);
