@@ -47,7 +47,7 @@ public class AuthController {
      * Return True if email is valid
      * Otherwise return False
      * */
-    @PostMapping("/forget-password")
+    @PostMapping("/forgetPassword")
     public ResponseEntity<Boolean> forgetPassword(@RequestBody Supervisor supervisor) {
         try {
             var userExist = userRepository.findByEmail(supervisor.getUserEmail());
@@ -80,7 +80,7 @@ public class AuthController {
      * Return True if successfully
      * Otherwise return False
      * */
-    @PostMapping("/change-password")
+    @PostMapping("/changePassword")
     public ResponseEntity<Boolean> changePassword(@RequestBody Supervisor supervisor) {
         try {
             var supervisorExist = supervisorRepository.findByIdentifyCode(supervisor.getIdentifyCode());
@@ -109,7 +109,7 @@ public class AuthController {
      * Return True if successfully
      * Otherwise return False
      * */
-    @PostMapping("/identify-code")
+    @PostMapping("/identifyCode")
     public ResponseEntity<Boolean> identifyCode(@RequestBody Supervisor supervisor) {
         try {
             var supervisorExist = supervisorRepository.findByIdentifyCode(supervisor.getIdentifyCode());

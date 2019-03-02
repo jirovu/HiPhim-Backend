@@ -1,6 +1,7 @@
 package com.web.hiphim.repositories;
 
 import com.web.hiphim.models.Movie;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,4 +24,7 @@ public interface IMovieRepository extends MongoRepository<Movie, String> {
 
     @Query(" { userId : ?0 }, approved: true ")
     List<Movie> findAllMoviesByUserId(String userId);
+
+    @Query(" {} ")
+    List<Movie> findLimitMovies(Pageable pageable);
 }

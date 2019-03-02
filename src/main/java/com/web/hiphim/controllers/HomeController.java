@@ -32,7 +32,7 @@ public class HomeController {
     @Autowired
     private ICommentRepository commentRepository;
 
-    @GetMapping("/get-all-movies")
+    @GetMapping("/getAllMovies")
     public ResponseEntity<List<Movie>> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
         if (movies != null) {
@@ -43,7 +43,7 @@ public class HomeController {
                 .body(movies);
     }
 
-    @GetMapping("/get-movies-by-category-and-name")
+    @GetMapping("/getMoviesByCategoryAndName")
     public ResponseEntity<List<Movie>> getMoviesByCategory(@Valid @RequestParam("category") String category,
                                                            @RequestParam("name") String name) {
         var result = movieRepository.findByCategoryAndName(category, name);
@@ -51,7 +51,7 @@ public class HomeController {
                 .body(result);
     }
 
-    @GetMapping("/get-movies-by-name")
+    @GetMapping("/getMoviesByName")
     public ResponseEntity<List<Movie>> getMoviesByName(@Valid @RequestParam("name") String name) {
         var result = movieRepository.findByName(name);
         return ResponseEntity.status(HttpStatus.OK)
@@ -76,17 +76,11 @@ public class HomeController {
         List<Movie> movies = movieRepository.findAllMoviesByUserId(userId).stream()
                 .filter(movie -> !movie.getId().equals(movieId))
                 .collect(Collectors.toList());
-
-        if (movies.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        } else {
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(movies);
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movies);
     }
 
-    @GetMapping("/get-movies-by-category")
+    @GetMapping("/getMoviesByCategory")
     public ResponseEntity<List<Movie>> getMoviesByCategory(@RequestParam("category") String category) {
         var moviesByCategory = movieRepository.findByCategory(category);
         if (moviesByCategory != null) {
@@ -97,7 +91,7 @@ public class HomeController {
                 .body(null);
     }
 
-    @PostMapping("/get-ans")
+    @PostMapping("/getAns")
     public ResponseEntity<String> getAnswer(@RequestBody String ask) {
         Random random = new Random();
         List<String> answers = new ArrayList<>() {
@@ -145,5 +139,11 @@ public class HomeController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(null);
+    }
+
+    @GetMapping("/getLimit8Movies")
+    public ResponseEntity<List<Movie>> getLimit8Movies() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(movieRepository.findLimitMovies(new PageRequest(0, 8)));
     }
 }

@@ -36,25 +36,31 @@ public class UploadHandler {
      * */
     public boolean uploadFileHandler(MultipartFile file, String username,
                                      String description, String category) throws IOException {
-        Path path;
+        try {
+            Path path = getPath(file);
 
+            byte[] bytes = file.getBytes();
+            Files.write(path, bytes);
+
+            var movieName = path.getFileName().toString().substring(0, path.getFileName().toString().indexOf("."));
+            var resultOfFile = fileHandler.parseFileName(file.getOriginalFilename());
+            app42Service.uploadFileForUser(username, movieName, description, path, fileHandler.getFileType(resultOfFile.get("typeOf")));
+
+            var userExist = userRepository.findByEmail(username);
+            var url = app42Service.getFileByUsername(username, movieName).get(0).getUrl();
+            movieRepository.insert(new Movie(movieName, description, userExist.getId(), url, category, true));
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    private Path getPath(MultipartFile file) {
         if (fileHandler.checkFileExist(file))
-            path = fileHandler.getPath(file);
+            return fileHandler.getPath(file);
         else
-            path = Paths.get(fileHandler.getPathFiles() + "\\" + file.getOriginalFilename());
-
-        byte[] bytes = file.getBytes();
-        Files.write(path, bytes);
-
-        var movieName = path.getFileName().toString().substring(0, path.getFileName().toString().indexOf("."));
-        var resultOfFile = fileHandler.parseFileName(file.getOriginalFilename());
-        app42Service.uploadFileForUser(username, movieName, description, path, fileHandler.getFileType(resultOfFile.get("typeOf")));
-
-
-        var userExist = userRepository.findByEmail(username);
-        var url = app42Service.getFileByUsername(username, movieName).get(0).getUrl();
-        movieRepository.insert(new Movie(movieName, description, userExist.getId(), url, category, true));
-
-        return true;
+            return Paths.get(fileHandler.getPathFiles() + "\\" + file.getOriginalFilename());
     }
 }

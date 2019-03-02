@@ -43,6 +43,7 @@ public class UserController {
                                               @RequestParam("description") String description,
                                               @RequestParam("category") String category) throws IOException {
         var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        description = new String(description.getBytes("ISO-8859-1"), "UTF-8");
         var result = uploadHandler.uploadFileHandler(file, email, description, category);
         if (result) {
             return ResponseEntity.status(HttpStatus.OK)
