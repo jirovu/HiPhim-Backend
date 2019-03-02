@@ -23,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("user")
-@PreAuthorize("hasRole('ROLE_USER')")
+@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 public class UserController {
     @Autowired
     private IUserRepository userRepository;
@@ -42,7 +42,8 @@ public class UserController {
     public ResponseEntity<Boolean> uploadFile(@RequestParam("file") MultipartFile file,
                                               @RequestParam("description") String description,
                                               @RequestParam("category") String category) throws IOException {
-        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        var email = ((org.springframework.security.core.userdetails.User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         description = new String(description.getBytes("ISO-8859-1"), "UTF-8");
         var result = uploadHandler.uploadFileHandler(file, email, description, category);
         if (result) {
@@ -55,7 +56,8 @@ public class UserController {
 
     @PutMapping("/changePassword")
     public ResponseEntity<Boolean> changePassword(@RequestBody User user) {
-        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        var email = ((org.springframework.security.core.userdetails.User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var userExist = userRepository.findByEmail(email);
         if (userExist == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -67,9 +69,10 @@ public class UserController {
                 .body(true);
     }
 
-    @GetMapping("/getAllMovies")
+    @GetMapping("/getAllMoviesByUser")
     public ResponseEntity<List<Movie>> getAllMovies() {
-        var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        var email = ((org.springframework.security.core.userdetails.User)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         var userExist = userRepository.findByEmail(email);
         if (userExist != null) {
             var movies = movieRepository.findAllMoviesByUserId(userExist.getId());
@@ -92,8 +95,8 @@ public class UserController {
             movieExist.setDescription(movie.getDescription());
             movieRepository.save(movieExist);
 
-            var userExist = userRepository.findByEmail(SecurityContextHolder.getContext()
-                    .getAuthentication().getPrincipal().toString());
+            var userExist = userRepository.findByEmail(((org.springframework.security.core.userdetails.User)
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             var movies = movieRepository.findAllMoviesByUserId(userExist.getId());
 
             return ResponseEntity.status(HttpStatus.OK)
@@ -110,7 +113,8 @@ public class UserController {
         if (movieExist != null) {
             movieRepository.delete(movieExist);
 
-            var email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+            var email = ((org.springframework.security.core.userdetails.User)
+                    SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
             app42Service.removeFileByUser(movie.getName(), email);
             var userExist = userRepository.findByEmail(email);
             var movies = movieRepository.findAllMoviesByUserId(userExist.getId());
