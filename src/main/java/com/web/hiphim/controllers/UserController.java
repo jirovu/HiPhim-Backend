@@ -1,9 +1,11 @@
 package com.web.hiphim.controllers;
 
 import com.web.hiphim.models.Comment;
+import com.web.hiphim.models.Log;
 import com.web.hiphim.models.Movie;
 import com.web.hiphim.models.User;
 import com.web.hiphim.repositories.ICommentRepository;
+import com.web.hiphim.repositories.ILogRepository;
 import com.web.hiphim.repositories.IMovieRepository;
 import com.web.hiphim.repositories.IUserRepository;
 import com.web.hiphim.services.app42api.App42Service;
@@ -19,16 +21,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("user")
-@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class UserController {
     @Autowired
     private IUserRepository userRepository;
     @Autowired
     private UploadHandler uploadHandler;
+    @Autowired
+    private ILogRepository logRepository;
     @Autowired
     private IMovieRepository movieRepository;
     @Autowired
@@ -37,6 +44,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private App42Service app42Service;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     @PostMapping("/uploadFile")
     public ResponseEntity<Boolean> uploadFile(@RequestParam("file") MultipartFile file,
@@ -44,9 +52,10 @@ public class UserController {
                                               @RequestParam("category") String category) throws IOException {
         var email = ((org.springframework.security.core.userdetails.User)
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        description = new String(description.getBytes("ISO-8859-1"), "UTF-8");
+        description = new String(description.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         var result = uploadHandler.uploadFileHandler(file, email, description, category);
         if (result) {
+            logRepository.insert(new Log(email, dateFormat.format(new Date()), "Uploaded new video"));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(true);
         }
@@ -65,6 +74,7 @@ public class UserController {
         }
         userExist.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userExist);
+        logRepository.insert(new Log(email, dateFormat.format(new Date()), "Changed the password"));
         return ResponseEntity.status(HttpStatus.OK)
                 .body(true);
     }
@@ -95,6 +105,9 @@ public class UserController {
             movieExist.setDescription(movie.getDescription());
             movieRepository.save(movieExist);
 
+            var email = userRepository.findByUserId(movie.getUserId()).getEmail();
+            logRepository.insert(new Log(email, dateFormat.format(new Date()), "Edited the video"));
+
             var userExist = userRepository.findByEmail(((org.springframework.security.core.userdetails.User)
                     SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
             var movies = movieRepository.findAllMoviesByUserId(userExist.getId());
@@ -111,10 +124,12 @@ public class UserController {
     public ResponseEntity<List<Movie>> deleteMovie(@RequestBody Movie movie) {
         var movieExist = movieRepository.findByMovieId(movie.getId());
         if (movieExist != null) {
+            var nameMovie = movieExist.getName();
             movieRepository.delete(movieExist);
 
             var email = ((org.springframework.security.core.userdetails.User)
                     SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+            logRepository.insert(new Log(email, dateFormat.format(new Date()), "Deleted the video named " + nameMovie));
             app42Service.removeFileByUser(movie.getName(), email);
             var userExist = userRepository.findByEmail(email);
             var movies = movieRepository.findAllMoviesByUserId(userExist.getId());
@@ -129,11 +144,15 @@ public class UserController {
     @PostMapping(value = "/addComment", produces = "application/json;charset=utf-8")
     public ResponseEntity<List<Comment>> addComment(@RequestParam("movieId") String movieId,
                                                     @RequestParam("content") String content,
-                                                    @RequestParam("email") String email) throws UnsupportedEncodingException {
+                                                    @RequestParam("email") String email) {
         var userExist = userRepository.findByEmail(email);
-        content = new String(content.getBytes("ISO-8859-1"), "UTF-8");
+        content = new String(content.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         if (userExist != null) {
             commentRepository.insert(new Comment(userExist.getName(), movieId, content));
+            if (!userExist.getRoles().contains("admin")) {
+                var movieName = movieRepository.findByMovieId(movieId).getName();
+                logRepository.insert(new Log(email, dateFormat.format(new Date()), "Commented on the video named " + movieName));
+            }
             var comments = commentRepository.findAllByMovieId(movieId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(comments);

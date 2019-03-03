@@ -10,8 +10,14 @@ import java.util.List;
 
 @Transactional(rollbackFor = Exception.class)
 public interface IMovieRepository extends MongoRepository<Movie, String> {
-    @Query(" { id : ?0, approved: true } ")
+    @Query(" { approved: true } ")
+    List<Movie> findAll();
+
+    @Query(" { _id : ?0, approved: true } ")
     Movie findByMovieId(String id);
+
+    @Query(" { _id : ?0 } ")
+    Movie findByIdMovie(String id);
 
     @Query(" { category : ?0, approved: true } ")
     List<Movie> findByCategory(String category);
@@ -22,9 +28,12 @@ public interface IMovieRepository extends MongoRepository<Movie, String> {
     @Query(" { name: { $regex: ?0 } }, approved: true ")
     List<Movie> findByName(String name);
 
-    @Query(" { userId : ?0 }, approved: true ")
+    @Query(" { userId : ?0, approved: true } ")
     List<Movie> findAllMoviesByUserId(String userId);
 
     @Query(" {} ")
     List<Movie> findLimitMovies(Pageable pageable);
+
+    @Query(" { approved: false } ")
+    List<Movie> findAllNotApprovedMovies();
 }

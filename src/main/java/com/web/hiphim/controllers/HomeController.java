@@ -59,10 +59,10 @@ public class HomeController {
     }
 
     @GetMapping("/personal/{userId}")
-    public ResponseEntity<Optional<Movie>> user(@PathVariable String userId, @RequestParam("id") String id) {
-        var userExist = userRepository.findById(userId);
-        var movieExist = movieRepository.findById(id);
-        if (userExist.isPresent() && movieExist.isPresent()) {
+    public ResponseEntity<Movie> user(@PathVariable String userId, @RequestParam("id") String id) {
+        var userExist = userRepository.findByUserId(userId);
+        var movieExist = movieRepository.findByMovieId(id);
+        if (userExist != null && movieExist != null && movieExist.isApproved()) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(movieExist);
         }

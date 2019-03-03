@@ -6,8 +6,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Document(collection = "log")
@@ -17,14 +17,14 @@ public class Log {
     @Id
     private String id = UUID.randomUUID().toString();
 
-    @Indexed(unique = true)
-    private String userId;
-    private Date timestamp;
-    private List<String> actions;
+    @Indexed
+    private String userEmail;
+    private String timestamp;
+    private String action;
 
-    public Log(String userId, Date timestamp, List<String> actions) {
-        this.userId = userId;
+    public Log(String userEmail, String timestamp, String action) {
+        this.userEmail = userEmail;
         this.timestamp = timestamp;
-        this.actions = actions;
+        this.action = action;
     }
 }

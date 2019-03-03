@@ -48,7 +48,7 @@ public class UploadHandler {
 
             var userExist = userRepository.findByEmail(username);
             var url = app42Service.getFileByUsername(username, movieName).get(0).getUrl();
-            movieRepository.insert(new Movie(movieName, description, userExist.getId(), url, category, true));
+            movieRepository.insert(new Movie(movieName, description, userExist.getId(), url, category, false));
 
             return true;
         } catch (Exception e) {
