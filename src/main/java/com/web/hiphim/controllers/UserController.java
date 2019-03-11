@@ -148,7 +148,7 @@ public class UserController {
         var userExist = userRepository.findByEmail(email);
         content = new String(content.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
         if (userExist != null) {
-            commentRepository.insert(new Comment(userExist.getName(), movieId, content));
+            commentRepository.insert(new Comment(userExist.getName(), movieId, content, dateFormat.format(new Date())));
             if (!userExist.getRoles().contains("admin")) {
                 var movieName = movieRepository.findByMovieId(movieId).getName();
                 logRepository.insert(new Log(email, dateFormat.format(new Date()), "Commented on the video named " + movieName));

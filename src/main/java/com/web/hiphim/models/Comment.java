@@ -19,10 +19,12 @@ public class Comment {
     private String nameUser;
     private String movieId;
     private String content;
+    private String timestamp;
 
-    public Comment(String nameUser, String movieId, String content) {
+    public Comment(String nameUser, String movieId, String content, String timestamp) {
         this.nameUser = nameUser;
         this.movieId = movieId;
         this.content = content;
+        this.timestamp = timestamp;
     }
 }
