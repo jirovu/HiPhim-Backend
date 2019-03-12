@@ -45,7 +45,7 @@ server:
 #Development Environment config
 ---
 server:
-  port: 1010
+  port: 1998
 
 spring:
   profiles: development
