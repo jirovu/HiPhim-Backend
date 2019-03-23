@@ -61,6 +61,6 @@ public class UploadHandler {
         if (fileHandler.checkFileExist(file))
             return fileHandler.getPath(file);
         else
-            return Paths.get(fileHandler.getPathFiles() + "\\" + file.getOriginalFilename());
+            return Paths.get(fileHandler.getPathFiles() + "/" + file.getOriginalFilename());
     }
 }

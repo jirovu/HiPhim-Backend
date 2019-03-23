@@ -17,7 +17,7 @@ import java.util.HashMap;
 @NoArgsConstructor
 public class FileHandler {
     // Path of the folder to store files
-    private final String pathFiles = System.getProperty("user.dir") + "\\src\\main\\resources\\files";
+    private final String pathFiles = System.getProperty("user.dir") + "/src/main/resources/files";
 
     /*
      * Check exist file
@@ -25,7 +25,7 @@ public class FileHandler {
      * Otherwise return False
      * */
     public boolean checkFileExist(MultipartFile file) {
-        var pathToStore = Paths.get(pathFiles + "\\" + file.getOriginalFilename());
+        var pathToStore = Paths.get(pathFiles + "/" + file.getOriginalFilename());
         try {
             Files.getFileStore(pathToStore);
             return true;
