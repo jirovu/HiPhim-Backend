@@ -28,9 +28,9 @@ spring:
   servlet:
     #    Setup upload file
     multipart:
-      enabled: false
-      max-file-size: 1GB
-      max-request-size: 1GB
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 500MB
 
 server:
   servlet:
