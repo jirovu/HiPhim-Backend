@@ -129,6 +129,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(customLogoutSuccessHandler)
                 .permitAll();
 
+        // Add filter which handles Authentication requests
         http
                 .addFilterBefore(authorizationHeaderPerRequest, UsernamePasswordAuthenticationFilter.class);
     }

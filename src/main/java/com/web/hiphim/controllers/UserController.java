@@ -46,6 +46,11 @@ public class UserController {
     private App42Service app42Service;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
+    /*
+    * Upload file
+    * Return true if upload successfully
+    * Otherwise return false
+    * */
     @PostMapping("/uploadFile")
     public ResponseEntity<Boolean> uploadFile(@RequestParam("file") MultipartFile file,
                                               @RequestParam("description") String description,
@@ -63,6 +68,11 @@ public class UserController {
                 .body(false);
     }
 
+    /*
+    * Change password for user
+    * Return true if change password successfully
+    * Otherwise return false
+    * */
     @PutMapping("/changePassword")
     public ResponseEntity<Boolean> changePassword(@RequestBody User user) {
         var email = ((org.springframework.security.core.userdetails.User)
@@ -79,6 +89,11 @@ public class UserController {
                 .body(true);
     }
 
+    /*
+    * Get all movies by user
+    * Return list of movies
+    * Otherwise return null
+    * */
     @GetMapping("/getAllMoviesByUser")
     public ResponseEntity<List<Movie>> getAllMovies() {
         var email = ((org.springframework.security.core.userdetails.User)
@@ -97,6 +112,11 @@ public class UserController {
                 .body(null);
     }
 
+    /*
+    * Edit movie
+    * Returns the movie list if the movie has been edited
+    * Otherwise return null
+    * */
     @PutMapping("/editMovie")
     public ResponseEntity<List<Movie>> editMovie(@RequestBody Movie movie) {
         var movieExist = movieRepository.findByMovieId(movie.getId());
@@ -120,6 +140,11 @@ public class UserController {
                 .body(null);
     }
 
+    /*
+    * Delete movie by movieId
+    * Returns the movie list if the movie has been deleted
+    * Otherwise return null
+    * */
     @PostMapping("/deleteMovie")
     public ResponseEntity<List<Movie>> deleteMovie(@RequestBody Movie movie) {
         var movieExist = movieRepository.findByMovieId(movie.getId());
@@ -141,6 +166,10 @@ public class UserController {
                 .body(null);
     }
 
+    /*
+    * Add comment
+    * Return the list of Comments
+    * */
     @PostMapping(value = "/addComment", produces = "application/json;charset=utf-8")
     public ResponseEntity<List<Comment>> addComment(@RequestParam("movieId") String movieId,
                                                     @RequestParam("content") String content,

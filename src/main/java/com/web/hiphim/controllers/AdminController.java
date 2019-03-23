@@ -33,24 +33,41 @@ public class AdminController {
     @Autowired
     private ILogRepository logRepository;
 
+    /*
+    * Get all movies
+    * Return list of Movies
+    * */
     @GetMapping("/getAllMovies")
     public ResponseEntity<List<Movie>> getAllMovies() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(movieRepository.findAll());
     }
 
+    /*
+    * Get all logs
+    * Return list of Logs
+    * */
     @GetMapping("/getAllLogs")
     public ResponseEntity<List<Log>> getAllLogs() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(logRepository.findAll());
     }
 
+    /*
+    * Get all unapproved movies
+    * Return list of Movies
+    * */
     @GetMapping("/getAllNotApprovedMovies")
     public ResponseEntity<List<Movie>> getAllNotApprovedMovies() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(movieRepository.findAllNotApprovedMovies());
     }
 
+    /*
+    * Get Movie by userId
+    * Return the movie if userId is valid
+    * Otherwise Return null
+    * */
     @GetMapping("/personal/{userId}")
     public ResponseEntity<Movie> user(@PathVariable String userId, @RequestParam("id") String id) {
         var userExist = userRepository.findByUserId(userId);
@@ -63,6 +80,11 @@ public class AdminController {
                 .body(null);
     }
 
+    /*
+    * Edit movie
+    * Return list of Movie if the movie exists
+    * Otherwise return NULL
+    * */
     @PutMapping("/editMovie")
     public ResponseEntity<List<Movie>> editMovie(@RequestBody Movie movie) {
         var movieExist = movieRepository.findByIdMovie(movie.getId());
@@ -79,6 +101,11 @@ public class AdminController {
                 .body(null);
     }
 
+    /*
+    * Browse movie
+    * Return list of Movie if the movie exists
+    * Otherwise return NULL
+    * */
     @PutMapping("/browseMovie")
     public ResponseEntity<List<Movie>> browseMovie(@RequestBody Movie movie){
         var movieExist = movieRepository.findByIdMovie(movie.getId());
@@ -94,6 +121,11 @@ public class AdminController {
                 .body(null);
     }
 
+    /*
+     * Delete movie
+     * Return list of Movie if the movie exists
+     * Otherwise return NULL
+     * */
     @PostMapping("/deleteMovie")
     public ResponseEntity<List<Movie>> deleteMovie(@RequestBody Movie movie) {
         var movieExist = movieRepository.findByMovieId(movie.getId());
@@ -110,6 +142,11 @@ public class AdminController {
                 .body(null);
     }
 
+    /*
+     * Change password
+     * Return True if change password successfully
+     * Otherwise Return False
+     * */
     @PutMapping("/changePassword")
     public ResponseEntity<Boolean> changePassword(@RequestBody com.web.hiphim.models.User user) {
         var email = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();

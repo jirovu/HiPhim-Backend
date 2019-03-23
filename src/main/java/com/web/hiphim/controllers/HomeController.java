@@ -32,6 +32,10 @@ public class HomeController {
     @Autowired
     private ICommentRepository commentRepository;
 
+    /*
+    * Get all movies
+    * Return list of movies
+    * */
     @GetMapping("/getAllMovies")
     public ResponseEntity<List<Movie>> getAllMovies() {
         List<Movie> movies = movieRepository.findAll();
@@ -43,6 +47,11 @@ public class HomeController {
                 .body(movies);
     }
 
+    /*
+    * Get movies by both Category and Name
+    * Return the movie if param is valid
+    * Otherwise return false
+    * */
     @GetMapping("/getMoviesByCategoryAndName")
     public ResponseEntity<List<Movie>> getMoviesByCategory(@Valid @RequestParam("category") String category,
                                                            @RequestParam("name") String name) {
@@ -51,6 +60,9 @@ public class HomeController {
                 .body(result);
     }
 
+    /*
+    * Get movies by name
+    * */
     @GetMapping("/getMoviesByName")
     public ResponseEntity<List<Movie>> getMoviesByName(@Valid @RequestParam("name") String name) {
         var result = movieRepository.findByName(name);
@@ -58,6 +70,11 @@ public class HomeController {
                 .body(result);
     }
 
+    /*
+    * Get movie by userId
+    * Return the movie if the movie exists
+    * Otherwise return null
+    * */
     @GetMapping("/personal/{userId}")
     public ResponseEntity<Movie> user(@PathVariable String userId, @RequestParam("id") String id) {
         var userExist = userRepository.findByUserId(userId);
@@ -70,6 +87,9 @@ public class HomeController {
                 .body(null);
     }
 
+    /*
+    * Get list of movie by userId and movieId
+    * */
     @GetMapping("/watch/{userId}")
     public ResponseEntity<List<Movie>> getMoviesByUserId(@PathVariable String userId,
                                                          @RequestParam("id") String movieId) {
@@ -80,6 +100,11 @@ public class HomeController {
                 .body(movies);
     }
 
+    /*
+    * Get movies by category
+    * Return the movie if the movie exists
+    * Otherwise Return null
+    * */
     @GetMapping("/getMoviesByCategory")
     public ResponseEntity<List<Movie>> getMoviesByCategory(@RequestParam("category") String category) {
         var moviesByCategory = movieRepository.findByCategory(category);
@@ -91,6 +116,10 @@ public class HomeController {
                 .body(null);
     }
 
+    /*
+    * Get the answer based on the corresponding question
+    * Return the answer
+    * */
     @PostMapping("/getAns")
     public ResponseEntity<String> getAnswer(@RequestBody String ask) {
         Random random = new Random();
@@ -115,7 +144,7 @@ public class HomeController {
         } catch (Exception e) {
             answers = new ArrayList<>() {
                 {
-                    heraRepository.findAllByLimit(new PageRequest(random.nextInt(100), 100))
+                    heraRepository.findAllByLimit(PageRequest.of(random.nextInt(100), 100))
                             .forEach(hera -> add(hera.getAns()));
                 }
             };
@@ -123,6 +152,9 @@ public class HomeController {
         }
     }
 
+    /*
+    * Get all comments of movie based on correspondence movieId
+    * */
     @GetMapping("/getAllComments")
     public ResponseEntity<List<Comment>> getAllComment(@RequestParam("movieId") String movieId) {
         var comments = commentRepository.findAllByMovieId(movieId);
@@ -130,6 +162,11 @@ public class HomeController {
                 .body(comments);
     }
 
+    /*
+    * Get User by userId
+    * Return the user if userId is valid
+    * Otherwise Return false
+    * */
     @GetMapping("/getUserByUserId")
     public ResponseEntity<User> getUserByUserId(@RequestParam("userId") String userId) {
         var userExist = userRepository.findByUserId(userId);
@@ -141,9 +178,12 @@ public class HomeController {
                 .body(null);
     }
 
+    /*
+    * Get 8 movie limit
+    * */
     @GetMapping("/getLimit8Movies")
     public ResponseEntity<List<Movie>> getLimit8Movies() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(movieRepository.findLimitMovies(new PageRequest(0, 8)));
+                .body(movieRepository.findLimitMovies(PageRequest.of(0, 8)));
     }
 }
